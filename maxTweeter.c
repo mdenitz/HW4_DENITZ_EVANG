@@ -261,4 +261,5 @@ int main(int argc, char **argv)
         printf("Invalid Input Format\n");
         exit(0);
     }
+    return 0;
 }
