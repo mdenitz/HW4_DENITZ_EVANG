@@ -54,13 +54,13 @@ char *strtoke(char *str, const char *delim)
 
     // Remember current start as found token
     token = start;
-
+    
     // Find next occurence of delim
     start = strpbrk(start, delim);
-
+    
     // Replace delim with terminator and move start to follower
     if (start) *start++ = '\0';
-
+    
     return token;
 }
 
@@ -70,13 +70,10 @@ void checkHeader(char *str, int* name_count, int* num_fields, int* quoted, int *
     int experienced_name = 0;
     // Get each word in string
     char *token;
-
+    
     int count_tokens = 1;
-    if (str[0] == ',') {
-        count_tokens++;
-        (*numCommas)++;
-    }
-
+    
+    
     token = strtoke(str, ",");
     //(*numCommas)++;
 
@@ -96,7 +93,7 @@ void checkHeader(char *str, int* name_count, int* num_fields, int* quoted, int *
             (*name_count) = count_tokens;
             experienced_name++;
         }
-
+    
         // Get next token
         token = strtoke(NULL, ",");
         if (token != NULL){
@@ -104,9 +101,9 @@ void checkHeader(char *str, int* name_count, int* num_fields, int* quoted, int *
         }
         (*num_fields) = count_tokens;
         count_tokens++;
-
+        
     }
-
+        
     if (experienced_name != 1){
         printf("Invalid Input Format\n");
         exit(0);
@@ -132,22 +129,31 @@ int tweeterexists(struct tweeters stored[] ,char* tweeter, int maxuser)
 char* tokenizeLine(char *str, const int count_name, int *commas)
 {
     char *token;
-
+    char* savetoken;
+    int correct = 0;
     int count_field = 1;
     token = strtoke(str, ",");
-    (*commas)++;
+    
 
     while (token != NULL) {
             if (count_field == count_name) {
-                  return token;
+                savetoken=token;
+                correct = 1;
             }
 
             // Get next token
             token = strtoke(NULL, ",");
-
-        count_field++;
-        (*commas)++;
+            if (token != NULL){
+               
+                (*commas)++;
+                count_field++;
+            }
+        
+        
         }
+    if (correct == 1){
+        return savetoken;
+    }
         printf("Invalid Input Format\n");
         exit(0);
 }
@@ -179,7 +185,7 @@ int main(int argc, char **argv)
 {
     int count_of_tweeters = 0;
     twt TweeterArray[MAX_LENGTH_CSV];
-
+    
     // First check that there is exactly 1 arg
     argChecker(argc);
     int name_exists = 0;
@@ -207,7 +213,7 @@ int main(int argc, char **argv)
     fgets(line, sizeof(line), fptr);
     // Check for header and fill variables
     checkHeader(line, &name_count, &num_fields, &quoted, &commaTot);
-
+    
     //printf("num commas in header: %d\n", commaTot);
 
     while (fgets(line, sizeof(line), fptr)) {
@@ -225,15 +231,15 @@ int main(int argc, char **argv)
                 printf("Invalid Input Format\n");
                 exit(0);
             }
-
+            
         }
         name_exists = tweeterexists(TweeterArray, tweeter, count_of_tweeters);
-
+        
         if (commaCount != commaTot) {
             printf("Invalid Input Format\n");
             exit(0);
         }
-
+        
         if (name_exists == 0) {
             TweeterArray[count_of_tweeters].name = (char *) malloc(200);
             strcpy(TweeterArray[count_of_tweeters].name, tweeter);
@@ -241,7 +247,7 @@ int main(int argc, char **argv)
             count_of_tweeters++;
         }
     }
-
+    
     sort_struct_DESC(TweeterArray); // sorts the hashmap by number of tweets
     int max_sort_length = 10;
     if (count_of_tweeters <SORTED_LENGTH){
@@ -256,7 +262,7 @@ int main(int argc, char **argv)
          free(TweeterArray[j].name);
      }
     int test = fclose(fptr);
-
+    
     if(test == -1){
         printf("Invalid Input Format\n");
         exit(0);
