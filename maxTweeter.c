@@ -129,7 +129,7 @@ int tweeterexists(struct tweeters stored[] ,char* tweeter, int maxuser)
 char* tokenizeLine(char *str, const int count_name, int *commas)
 {
     char *token;
-    char* savetoken;
+    char* savetoken="";
     int correct = 0;
     int count_field = 1;
     token = strtoke(str, ",");
