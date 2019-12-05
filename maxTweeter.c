@@ -82,7 +82,7 @@ void checkHeader(char *str, int* name_count, int* num_fields, int* quoted, int *
         //printf("%s\n", token);
         //printf("\"\"\"name\"\"\"");
         // If it is in tokens, set nameExist to 1
-        if (strcmp(token, "\"\"\"name\"\"\"") == 0) {
+        if (strcmp(token, "\"name\"") == 0) {
             experienced_name++;
             (*name_count) = count_tokens;
             // Name field is quoted
@@ -180,6 +180,16 @@ twt sort_struct_DESC(twt sorted[])
     // Returns struct w/ sorted usernames
     return *sorted;
 }
+char * stripquotes(const char *input, char *output)
+{
+  int len = (int)strlen(input);
+    if(len > 0){
+        strcpy(output, ++input);}
+    if(len > 1){
+        output[len - 2] = '\0';}
+    return output;
+}
+
 
 int main(int argc, char **argv)
 {
@@ -190,6 +200,7 @@ int main(int argc, char **argv)
     argChecker(argc);
     int name_exists = 0;
     char *tweeter;
+    char none[1024];
 
     // Create file ptr and check if exists
     FILE *fptr;
@@ -226,6 +237,7 @@ int main(int argc, char **argv)
                 printf("Invalid Input Format\n");
                 exit(0);
             }
+             tweeter = stripquotes(tweeter,none);
         } else{
             if ( tweeter[0] == '"' || tweeter[lentweeter] == '"'){
                 printf("Invalid Input Format\n");
